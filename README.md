@@ -1,36 +1,76 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Reddit Story Viewer
+
+This is a [Next.js](https://nextjs.org/) application that allows users to view stories from Reddit. It provides features for sorting, filtering, and paginating through the stories. The data is sourced from a Turso/libSQL database.
+
+## Tech Stack
+
+- **Framework**: [Next.js](https://nextjs.org/)
+- **Language**: [TypeScript](https://www.typescriptlang.org/)
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/)
+- **UI Components**: [shadcn/ui](https://ui.shadcn.com/) (using Radix UI)
+- **Database**: [Turso](https://turso.tech/)/[libSQL](https://libsql.org/)
+- **Linting**: [ESLint](https://eslint.org/)
+- **Formatting**: [Prettier](https://prettier.io/)
+
+## Features
+
+- **View Stories**: Browse stories fetched from a database.
+- **Sorting**: Sort stories by creation date, score, or number of comments in ascending or descending order.
+- **Filtering**:
+  - Filter stories by time range (last week, last month, last year, all time).
+  - Filter stories by flair.
+  - Filter stories by tags.
+- **Pagination**: Navigate through pages of stories.
+- **Responsive Design**: The application is designed to work on various screen sizes.
+- **Dark Mode**: Theme can be toggled between light and dark mode.
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+- [Node.js](https://nodejs.org/) (v20 or later)
+- [pnpm](https://pnpm.io/)
+
+### Installation
+
+1.  Clone the repository:
+
+    ```bash
+    git clone https://github.com/your-username/reddit-story.git
+    cd reddit-story
+    ```
+
+2.  Install dependencies:
+    ```bash
+    pnpm install
+    ```
+
+### Environment Variables
+
+Create a `.env.local` file in the root of the project and add the following environment variables:
+
+```
+TURSO_DATABASE_URL="your_turso_database_url"
+TURSO_AUTH_TOKEN="your_turso_auth_token"
+```
+
+You can get these values from your [Turso](https://turso.tech/) dashboard.
+
+### Running the Development Server
+
+To run the application in development mode, use the following command:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
 pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Scripts
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `pnpm dev`: Starts the development server.
+- `pnpm build`: Builds the application for production.
+- `pnpm start`: Starts the production server.
+- `pnpm lint`: Lints the codebase.
+- `pnpm format`: Formats the code with Prettier.
+- `pnpm format:check`: Checks the formatting of the code.

@@ -29,7 +29,7 @@ export const metadata: Metadata = {
       '每日为您精选来自 Reddit 的热门故事。探索来自世界各地网友的真实分享，发现最有趣、最感人、最奇葩的精彩内容。',
     type: 'website',
     // TODO: 请将下面的 URL 替换为您的网站域名
-    url: 'https://www.yourwebsite.com',
+    url: process.env.NEXT_PUBLIC_APP_URL,
     images: [
       {
         // TODO: 请将下面的图片路径替换为您的网站分享图
