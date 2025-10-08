@@ -59,7 +59,10 @@ export default function FilterSortPanel({
           </Button>
         </div>
         <div className='flex items-center space-x-2 flex-1 md:flex-none w-full md:w-auto'>
-          <label htmlFor='filter-by-time' className='flex-shrink-0 w-12 font-bold'>
+          <label
+            htmlFor='filter-by-time'
+            className='flex-shrink-0 w-12 font-bold'
+          >
             筛选
           </label>
           <CustomSelect
