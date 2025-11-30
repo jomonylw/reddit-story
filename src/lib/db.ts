@@ -39,7 +39,6 @@ export async function getStories(
     args.push(...tags)
     groupByClause = 'GROUP BY s.id'
     havingClause = 'HAVING COUNT(DISTINCT st.tag_name) = ?'
-    args.push(tags.length)
   }
 
   if (filter !== 'all') {
@@ -60,6 +59,10 @@ export async function getStories(
       // Format to 'YYYY-MM-DD HH:MM:SS'
       args.push(startDate.toISOString().slice(0, 19).replace('T', ' '))
     }
+  }
+
+  if (tags && tags.length > 0) {
+    args.push(tags.length)
   }
 
   const allowedSortFields = [
@@ -82,8 +85,6 @@ export async function getStories(
   const sql = `SELECT s.* ${fromClause} ${whereClause} ${groupByClause} ${havingClause} ${orderBy} LIMIT ? OFFSET ?`
   args.push(limit, offset)
 
-  console.log('Executing SQL:', sql, 'with args:', args)
-
   const result = await db.execute({ sql, args })
   return result.rows as unknown as Story[]
 }
@@ -97,6 +98,8 @@ export async function getStoryCount(
   let whereClause =
     'WHERE s.step1_completed = 1 AND s.step2_completed = 1 AND s.step3_completed = 1'
   const args: (string | number)[] = []
+  let groupByClause = ''
+  let havingClause = ''
 
   if (flair) {
     whereClause += ' AND s.link_flair_text = ?'
@@ -104,18 +107,12 @@ export async function getStoryCount(
   }
 
   if (tags && tags.length > 0) {
-    const subQuery = `
-      SELECT s.id
-      FROM story s
-      JOIN story_tag st ON s.id = st.story_id
-      WHERE st.tag_name IN (${tags.map(() => '?').join(',')})
-      GROUP BY s.id
-      HAVING COUNT(DISTINCT st.tag_name) = ?
-    `
-    const subQueryArgs = [...tags, tags.length]
-
-    fromClause += ` JOIN (${subQuery}) AS matching_stories ON s.id = matching_stories.id`
-    args.push(...subQueryArgs)
+    fromClause += ' JOIN story_tag st ON s.id = st.story_id'
+    const placeholders = tags.map(() => '?').join(',')
+    whereClause += ` AND st.tag_name IN (${placeholders})`
+    args.push(...tags)
+    groupByClause = 'GROUP BY s.id'
+    havingClause = 'HAVING COUNT(DISTINCT st.tag_name) = ?'
   }
 
   if (filter !== 'all') {
@@ -133,12 +130,19 @@ export async function getStoryCount(
     }
     if (startDate) {
       whereClause += ' AND created_utc >= ?'
-      // Format to 'YYYY-MM-DD HH:MM:SS'
       args.push(startDate.toISOString().slice(0, 19).replace('T', ' '))
     }
   }
 
-  const countSql = `SELECT COUNT(s.id) as count ${fromClause} ${whereClause}`
+  if (tags && tags.length > 0) {
+    args.push(tags.length)
+  }
+
+  // When grouping, we need to count the distinct groups to get the correct total.
+  const countSql = groupByClause
+    ? `SELECT COUNT(*) as count FROM (SELECT s.id ${fromClause} ${whereClause} ${groupByClause} ${havingClause}) AS subquery`
+    : `SELECT COUNT(s.id) as count ${fromClause} ${whereClause}`
+
   const result = await db.execute({ sql: countSql, args })
   return Number(result.rows[0].count)
 }

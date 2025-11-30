@@ -159,15 +159,6 @@ export default function StoryPage() {
     setCurrentPage(1)
   }
 
-  const filteredStories = stories.filter((story) => {
-    const flairMatch = !selectedFlair || story.link_flair_text === selectedFlair
-    if (!flairMatch) return false
-
-    if (selectedTags.length === 0) return true
-    const storyTags = (story.tags || '').split(',').map((t) => t.trim())
-    return selectedTags.every((selectedTag) => storyTags.includes(selectedTag))
-  })
-
   const generatePagination = (currentPage: number, totalPages: number) => {
     if (totalPages <= 7) {
       return Array.from({ length: totalPages }, (_, i) => i + 1)
@@ -236,7 +227,7 @@ export default function StoryPage() {
             <p className='text-red-500'>错误: {error}</p>
           </div>
         ) : (
-          filteredStories.map((story) => (
+          stories.map((story) => (
             <StoryCard
               key={story.id}
               story={story}
